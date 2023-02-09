@@ -15,13 +15,16 @@ public class Main {
 
     Connection connection = DriverManager.getConnection(url, user, pass);
     Statement statement = connection.createStatement();
-    statement.execute("SELECT pl.course_name, pl.subscription_date FROM PurchaseList pl WHERE pl.course_name = \"Веб-разработчик c 0 до PRO\"ORDER BY pl.subscription_date;");
-    ResultSet resultSet = statement.executeQuery("SELECT * FROM Students s WHERE MONTH(s.registration_date ) = 4");
-    while (resultSet.next()) {
-      String courseName = resultSet.getString("name");
-      System.out.println(courseName);
+    ResultSet resultSet2 = statement.executeQuery(
+        "SELECT course_name, COUNT(course_name)/(MAX(MONTH(subscription_date)) - MIN(MONTH(subscription_date))) AS Coefficient FROM PurchaseList GROUP BY course_name");
+    while (resultSet2.next()) {
+      String result =
+          resultSet2.getString("course_name") + " - " + resultSet2.getString("Coefficient");
+      System.out.println(result);
+
     }
-    resultSet.close();
+
+    resultSet2.close();
     statement.close();
     connection.close();
 
